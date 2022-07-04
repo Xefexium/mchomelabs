@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { TextField } from '@mui/material'
 import { command } from '../services/rcon';
 import Content from './Content'
 import styles from './OutputWindow.module.css'
@@ -22,12 +23,12 @@ const OutputWindow = () => {
     if (e.key === 'Enter') {
       let output = await command(inputText)
       setOutputs(outputs.concat(output.data))
-      
+
     }
   }
 
   const scrollToBottom = () => {
-    contentWindow.current.scrollIntoView({behavior: "smooth"})
+    contentWindow.current.scrollIntoView({ behavior: "smooth" })
   }
 
   return (
@@ -36,7 +37,7 @@ const OutputWindow = () => {
         <Content content={outputs}></Content>
         <div ref={contentWindow}></div>
       </div>
-      <input className={styles.commandInput} type='text' name='command' placeholder='set time 0' value={inputText} onChange={handleOnChange} onKeyUp={handleOnKeyUp}></input>
+      <TextField className={styles.commandInput} type='text' variant='outlined' placeholder='set time 0' value={inputText} onChange={handleOnChange} onKeyUp={handleOnKeyUp}></TextField>
     </div>
   );
 }

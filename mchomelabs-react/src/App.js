@@ -1,9 +1,13 @@
 import OutputWindow from './OutputWindow'
+import Header from "./Header"
 
 function App() {
 
   return (
-    <OutputWindow />
+    <div>
+      <Header />
+      <OutputWindow />
+    </div>
   );
 }
 
