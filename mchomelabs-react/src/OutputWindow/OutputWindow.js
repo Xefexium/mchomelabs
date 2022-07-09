@@ -12,7 +12,6 @@ const OutputWindow = () => {
 
   useEffect(() => {
     scrollToBottom()
-    console.log("scrolled")
   }, [outputs])
 
   const handleOnChange = (e) => {
