@@ -8,16 +8,12 @@ import Paper from '@mui/material/Paper'
 import Popper from '@mui/material/Popper'
 import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
-import { startServer, forceKillServer } from '../../services/server'
+import { startServer, forceKillServer, getServerRunning } from '../../services/server'
 import { command } from '../../services/rcon'
-import io from 'socket.io-client'
 
-const START_SERVER = 'Start Server'
-const STOP_SERVER = 'Stop Server'
-const FORCE_STOP = 'Force Stop'
-const options = [START_SERVER, STOP_SERVER, FORCE_STOP]
-
-const socket = io()
+const START_SERVER = 0
+const STOP_SERVER = 1
+const FORCE_STOP = 2
 
 export default function SplitButton() {
   const [open, setOpen] = useState(false)
@@ -26,32 +22,26 @@ export default function SplitButton() {
   const [isServerRunning, setIsServerRunning] = useState(false)
 
   useEffect(() => {
-    socket.connect()
-    socket.on('Server Down', () => {
-      setSelectedIndex(0)
-      setIsServerRunning(true)
-    })
-    socket.on('Server Up', () => {
-      setSelectedIndex(1)
-      setIsServerRunning(false)
-    })
+    const interval = setInterval(async () => {
+      const isRunning = await getServerRunning()
+      setIsServerRunning(isRunning)
+    }, 5000);
 
-    return () => {
-      socket.off('Server Down')
-      socket.off('Server Up')
-      socket.disconnect()
-    }
-  }, [])
+    return () => clearInterval(interval)
+  }, [isServerRunning, selectedIndex])
 
   const handleClick = async () => {
-    if (options[selectedIndex] === START_SERVER) {
+    if (selectedIndex === START_SERVER) {
       await startServer()
+      setSelectedIndex(1)
     }
-    else if (options[selectedIndex] === STOP_SERVER) {
+    else if (selectedIndex === STOP_SERVER) {
       await command('stop')
+      setSelectedIndex(0)
     }
-    else if (options[selectedIndex] === FORCE_STOP) {
+    else if (selectedIndex === FORCE_STOP) {
       await forceKillServer()
+      setSelectedIndex(0)
     }
   }
 
@@ -71,11 +61,30 @@ export default function SplitButton() {
 
     setOpen(false)
   }
+  const getButtonColor = () => {
+    return selectedIndex === 0 ? "primary" : "error"
+  }
+
+  const getButtonText = () => {
+    if (selectedIndex === START_SERVER)
+      return 'Start Server'
+    else if (selectedIndex === STOP_SERVER)
+      return 'Stop Server'
+    else if (selectedIndex === FORCE_STOP)
+      return 'Force Stop Server'
+  }
+
+  const isButtonDisabled = () => {
+    return (selectedIndex === 0 && isServerRunning) || (selectedIndex !== 0 && !isServerRunning)
+  }
+  const isSelectionDisabled = (index) => {
+    return (index === 0 && isServerRunning) || (index !== 0 && !isServerRunning)
+  }
 
   return (
     <Fragment>
       <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-        <Button onClick={handleClick} color={selectedIndex === 0 ? "primary" : "error"}>{options[selectedIndex]}</Button>
+        <Button onClick={handleClick} color={getButtonColor()} disabled={isButtonDisabled()}>{getButtonText()}</Button>
         <Button
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
@@ -83,7 +92,7 @@ export default function SplitButton() {
           aria-label="select merge strategy"
           aria-haspopup="menu"
           onClick={handleToggle}
-          color={selectedIndex === 0 ? "primary" : "error"}
+          color={getButtonColor()}
         >
           <ArrowDropDown />
         </Button>
@@ -109,7 +118,7 @@ export default function SplitButton() {
                   {options.map((option, index) => (
                     <MenuItem
                       key={option}
-                      disabled={(isServerRunning && index === 0) || (!isServerRunning && (index === 1 || index === 2))}
+                      disabled={isSelectionDisabled(index)}
                       selected={index === selectedIndex}
                       onClick={(event) => handleMenuItemClick(event, index)}
                     >

@@ -10,6 +10,6 @@ export const forceKillServer = async () => {
     return await axios.post(base_url + '/forceKillServer')
 }
 
-export const serverStatus = async () => {
-    return await axios.get(base_url + '/serverStatus')
+export const getServerRunning = async () => {
+    return await axios.get(base_url + '/serverRunning')
 }

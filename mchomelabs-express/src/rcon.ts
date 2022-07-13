@@ -1,25 +1,28 @@
 import { RCON } from 'minecraft-server-util'
 import { Request, Response } from 'express'
-import Server from './MCServerManager'
+import logger from './logger';
 
 const client = new RCON()
 
 client.on('message', async (data) => {
-    console.info(data);
+    logger.info(data);
 });
 
 const rconCommand = async (command: any) => {
-
-    const server = Server()
-
-    if (!server.isServerRunning())
-        return 'Server not running! Start server and try again!'
-
-    await client.connect('localhost', 25575)
-    await client.login('1234')
-
-    let output = await client.execute(command)
-    console.info(command)
+    let output
+    try {
+        await client.connect('localhost', 25575)
+        await client.login('1234')
+        output = await client.execute(command)
+    }
+    catch (err) {
+        output = 'Could not connect to Server RCON!\nCheck that server is running and ports are open!'
+        logger.error(output)
+    }
+    finally {
+        client.close()
+    }
+    logger.info(command)
     output = output.toString().replaceAll('/', '\n/') // make commands appear on new lines
     output = output.toString().replace('\n', '') // remove first replacement
     return output
