@@ -6,8 +6,8 @@ export const startServer = async () => {
     return await axios.post(base_url + '/startServer')
 }
 
-export const forceKillServer = async () => {
-    return await axios.post(base_url + '/forceKillServer')
+export const forceStopServer = async () => {
+    return await axios.post(base_url + '/forceStopServer')
 }
 
 export const getServerRunning = async () => {

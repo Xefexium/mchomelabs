@@ -1,11 +1,9 @@
-import SplitButton from './SplitButton'
-import styles from './Header.module.css'
+import SplitButton from './PowerButtonGroup'
+import PowerButtonGroup from './PowerButtonGroup'
 
 const Header = () => {
     return (
-        <div className={styles.header}>
-            <SplitButton />
-        </div>
+        <PowerButtonGroup />
     )
 }
 
