@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import React, { useEffect, useState } from 'react'
-import { forceStopServer, getServerRunning, startServer } from '../../services/server'
+import { forceStopServer, getServerRunning, startServer } from '../../services/Server'
 import styles from './PowerButtonGroup.module.css'
 
 const PowerButtonGroup = () => {

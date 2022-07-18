@@ -4,16 +4,18 @@ import express, { Application } from 'express'
 import { postCommand } from './rcon'
 import MCServerManager from './MCServerManager'
 import logger from './logger'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 const app: Application = express()
 const port: number = 3001
-
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 const options: cors.CorsOptions = { origin: 'http://localhost:3000' };
 app.use(cors(options));
 
-const system = MCServerManager()
+const system = MCServerManager(process.env.SERVER_PATH)
 
 app.post('/command', postCommand)
 app.get('/serverPID', system.getServerPID)

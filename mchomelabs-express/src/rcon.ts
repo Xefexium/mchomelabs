@@ -9,6 +9,7 @@ client.on('message', async (data) => {
 });
 
 const rconCommand = async (command: any) => {
+    logger.info('Command Issued: ' + command)
     let output
     try {
         await client.connect('localhost', 25575)
@@ -22,7 +23,7 @@ const rconCommand = async (command: any) => {
     finally {
         client.close()
     }
-    logger.info(command)
+    logger.info('Command Output: ' + output)
     return output
 }
 

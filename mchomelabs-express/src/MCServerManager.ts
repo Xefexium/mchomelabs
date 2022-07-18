@@ -3,11 +3,12 @@ import child_process from 'child_process'
 import { Request, Response } from 'express'
 import logger from './logger'
 import ServerStatus from './ServerStatus'
+import { exit } from 'process'
 
-const MCServerManager = () => {
+const MCServerManager = (SERVER_PATH: string | undefined) => {
     let serverProcess: child_process.ChildProcessWithoutNullStreams
 
-    const MC_SERVER_LOCATION = 'C:/Users/atorr/Projects/mchomelabs/server/'
+    const MC_SERVER_LOCATION = SERVER_PATH
     const JAR_FILE_NAME = 'server.jar'
 
     const isServerRunning = () : boolean => {
@@ -43,14 +44,26 @@ const MCServerManager = () => {
     const postStartServer = (req: Request, res: Response) => {
         if (!isServerRunning()) {
             logger.info('Starting Server')
-            serverProcess = child_process.spawn('java', ['-Xmx1024M', '-Xms1024M', '-jar', MC_SERVER_LOCATION + JAR_FILE_NAME, 'nogui'], { cwd: MC_SERVER_LOCATION, windowsHide: true })
+            serverProcess = child_process.spawn('java', ['-Xmx1024M', '-Xms1024M', '-jar', JAR_FILE_NAME, 'nogui'], { cwd: MC_SERVER_LOCATION, windowsHide: true })
             logger.info(ServerStatus.RUNNING)
+            // serverProcess.stdout.on('data', (data) => {
+            //     logger.info(data)
+            // })
             serverProcess.on('error', (error) => {
+                logger.error(error)
+            })
+            serverProcess.on('uncaughtException', (error) => {
                 logger.error(error)
             })
             process.on('exit', () => {
                 logger.info('Express server stopped. Server exiting.')
                 serverProcess.kill()
+                exit()
+            })
+            process.on('SIGINT', () => {
+                logger.info('Express server interrupted. Server exiting.')
+                serverProcess.kill()
+                exit()
             })
             logger.info(`Server started - PID ${serverProcess.pid}`)
         }
