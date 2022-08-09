@@ -44,7 +44,7 @@ const MCServerManager = (SERVER_PATH: string | undefined) => {
     const postStartServer = (req: Request, res: Response) => {
         if (!isServerRunning()) {
             logger.info('Starting Server')
-            serverProcess = child_process.spawn('java', ['-Xmx1024M', '-Xms1024M', '-jar', JAR_FILE_NAME, 'nogui'], { cwd: MC_SERVER_LOCATION, windowsHide: true })
+            serverProcess = child_process.spawn('java', ['-Xmx1024M', '-Xms1024M', '-jar', MC_SERVER_LOCATION + JAR_FILE_NAME, 'nogui'], { cwd: MC_SERVER_LOCATION, windowsHide: true })
             logger.info(ServerStatus.RUNNING)
             // serverProcess.stdout.on('data', (data) => {
             //     logger.info(data)
