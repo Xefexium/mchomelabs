@@ -6,7 +6,7 @@ import styles from './OutputWindow.module.css'
 const OutputWindow = () => {
 
   const [inputText, setInputText] = useState('')
-  const [outputs, setOutputs] = useState([<span>Enter a command below!</span>])
+  const [outputs, setOutputs] = useState([])
   const contentWindow = useRef(null)
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const OutputWindow = () => {
     <div className={styles.outputWindow}>
       <div className={styles.content} >
         {outputs.map((value, index) => {
-          return <span class='mc' key={index}>{value}</span>
+          return <span key={index}>{value}</span>
         })}
         <div ref={contentWindow}></div>
       </div>
