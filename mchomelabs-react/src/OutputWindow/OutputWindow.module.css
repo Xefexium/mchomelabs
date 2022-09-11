@@ -5,6 +5,7 @@
   font: 16px/26px monospace;
   overflow: auto;
   scroll-behavior: auto;
+  white-space: pre-wrap;
 }
 
 .commandInput {

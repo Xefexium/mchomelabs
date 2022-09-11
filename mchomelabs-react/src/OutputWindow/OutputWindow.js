@@ -20,7 +20,6 @@ const OutputWindow = () => {
   const handleOnKeyUp = async (e) => {
     if (e.key === 'Enter') {
       let output = await command(inputText)
-      console.log(output)
       setOutputs([...outputs, output])
     }
   }

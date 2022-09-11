@@ -30,6 +30,5 @@ const rconCommand = async (command: any) => {
 export const postCommand = async (req: Request, res: Response) => {
     const command = req.body.command
     const output = await rconCommand(command)
-    const outputLines = output.split('\n')
-    res.json(outputLines)
+    res.json(output)
 }
