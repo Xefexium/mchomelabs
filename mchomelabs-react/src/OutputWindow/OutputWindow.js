@@ -28,11 +28,15 @@ const OutputWindow = () => {
     contentWindow.current.scrollIntoView({ behavior: "smooth" })
   }
 
+  const ensureValueHasLinebreak = (value) => {
+    return value.endsWith('\n') ? value : value + '\n'
+  }
+
   return (
     <div className={styles.outputWindow}>
       <div className={styles.content} >
         {outputs.map((value, index) => {
-          return <span key={index}>{value}</span>
+          return <span key={index}>{ensureValueHasLinebreak(value)}</span>
         })}
         <div ref={contentWindow}></div>
       </div>

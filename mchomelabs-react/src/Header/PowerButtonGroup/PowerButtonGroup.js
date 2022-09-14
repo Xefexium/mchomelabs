@@ -10,9 +10,9 @@ const PowerButtonGroup = () => {
 
     useEffect(() => {
         const interval = setInterval(async () => {
-            const isRunning = await getServerRunning()
-            setIsServerRunning(isRunning.data.isServerRunning)
-        }, 5000);
+            const response = await getServerRunning()
+            setIsServerRunning(response.data.isServerRunning)
+        }, 1000);
 
         return () => clearInterval(interval)
     }, [isServerRunning])
@@ -28,7 +28,7 @@ const PowerButtonGroup = () => {
 
     const StartButton = <Button onClick={handleStartServer} color="primary">Start Server</Button>
     const StopButton = <Button onClick={handleForceStopServer} color="error">Force Stop Server</Button>
-
+    
     return (
         <div className={styles.buttonGroup}>
             <ButtonGroup variant="contained" aria-label="outlined primary button group">

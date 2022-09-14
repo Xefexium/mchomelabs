@@ -1,4 +1,6 @@
+import { Tail } from 'tail';
 import winston from 'winston'
+import { LATEST_LOGS_PATH } from './env';
 
 const logger = winston.createLogger({
     level: 'info',
@@ -19,5 +21,11 @@ if (process.env.NODE_ENV !== 'production') {
         format: winston.format.simple(),
     }));
 }
+
+const tail = new Tail(LATEST_LOGS_PATH)
+
+tail.on("line", (data) => {
+    console.info(data)
+})
 
 export default logger

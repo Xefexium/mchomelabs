@@ -4,14 +4,13 @@ import { Request, Response } from 'express'
 import logger from './logger'
 import ServerStatus from './ServerStatus'
 import { exit } from 'process'
+import { JAR_FILE_NAME, SERVER_JAR_PATH } from './env'
 
-const MCServerManager = (SERVER_PATH: string | undefined) => {
+
+const MCServerManager = () => {
     let serverProcess: child_process.ChildProcessWithoutNullStreams
 
-    const MC_SERVER_LOCATION = SERVER_PATH
-    const JAR_FILE_NAME = 'server.jar'
-
-    const isServerRunning = () : boolean => {
+    const isServerRunning = (): boolean => {
         const isRunning = !!serverProcess && serverProcess.kill(0)
         if (isRunning) {
             logger.info(ServerStatus.RUNNING)
@@ -24,11 +23,11 @@ const MCServerManager = (SERVER_PATH: string | undefined) => {
     }
 
     const getServerPID = (req: Request, res: Response) => {
-        res.json({pid: serverProcess.pid})
+        res.json({ pid: serverProcess.pid })
     }
 
     const getServerRunning = (req: Request, res: Response) => {
-        res.json({isServerRunning: isServerRunning()})
+        res.json({ isServerRunning: isServerRunning() })
     }
 
     const getSystemStats = (req: Request, res: Response) => {
@@ -44,7 +43,7 @@ const MCServerManager = (SERVER_PATH: string | undefined) => {
     const postStartServer = (req: Request, res: Response) => {
         if (!isServerRunning()) {
             logger.info('Starting Server')
-            serverProcess = child_process.spawn('java', ['-Xmx1024M', '-Xms1024M', '-jar', MC_SERVER_LOCATION + JAR_FILE_NAME, 'nogui'], { cwd: MC_SERVER_LOCATION, windowsHide: true })
+            serverProcess = child_process.spawn('java', ['-Xmx1024M', '-Xms1024M', '-jar', SERVER_JAR_PATH + JAR_FILE_NAME, 'nogui'], { cwd: SERVER_JAR_PATH, windowsHide: true })
             logger.info(ServerStatus.RUNNING)
             // serverProcess.stdout.on('data', (data) => {
             //     logger.info(data)
@@ -70,7 +69,7 @@ const MCServerManager = (SERVER_PATH: string | undefined) => {
         else {
             logger.info('Server running')
         }
-        res.json({isServerRunning: isServerRunning(), pid: serverProcess.pid})
+        res.json({ isServerRunning: isServerRunning(), pid: serverProcess.pid })
     }
 
     const postForceStopServer = (req: Request, res: Response) => {
