@@ -1,3 +1,4 @@
+import React from 'react'
 import PowerButtonGroup from './PowerButtonGroup'
 
 const Header = () => {

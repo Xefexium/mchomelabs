@@ -2,22 +2,23 @@ import { useEffect, useRef, useState } from 'react'
 import { TextField } from '@mui/material'
 import { command } from '../services/RCON';
 import styles from './OutputWindow.module.css'
+import React from 'react';
 
 const OutputWindow = () => {
 
   const [inputText, setInputText] = useState('')
-  const [outputs, setOutputs] = useState([])
-  const contentWindow = useRef(null)
+  const [outputs, setOutputs] = useState(Array<string>)
+  const contentWindow = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     scrollToBottom()
   }, [outputs])
 
-  const handleOnChange = (e) => {
+  const handleOnChange = (e: any) => {
     setInputText(e.target.value)
   }
 
-  const handleOnKeyUp = async (e) => {
+  const handleOnKeyUp = async (e: any) => {
     if (e.key === 'Enter') {
       let output = await command(inputText)
       setOutputs([...outputs, output])
@@ -25,10 +26,10 @@ const OutputWindow = () => {
   }
 
   const scrollToBottom = () => {
-    contentWindow.current.scrollIntoView({ behavior: "smooth" })
+    contentWindow!.current!.scrollIntoView({ behavior: "smooth" })
   }
 
-  const ensureValueHasLinebreak = (value) => {
+  const ensureValueHasLinebreak = (value: string) => {
     return value.endsWith('\n') ? value : value + '\n'
   }
 

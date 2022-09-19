@@ -6,7 +6,7 @@ import styles from './PowerButtonGroup.module.css'
 
 const PowerButtonGroup = () => {
 
-    const [isServerRunning, setIsServerRunning] = useState(undefined)
+    const [isServerRunning, setIsServerRunning] = useState(false)
 
     useEffect(() => {
         const interval = setInterval(async () => {
