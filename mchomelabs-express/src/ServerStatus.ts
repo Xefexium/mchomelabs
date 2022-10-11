@@ -1,3 +1,8 @@
+interface ServerStatus {
+    isServerRunning: boolean,
+    status: string
+}
+
 const ServerStatus = {
     NOT_RUNNING: 'Server not running',
     RUNNING: 'Server running',

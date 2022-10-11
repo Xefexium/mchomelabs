@@ -22,7 +22,11 @@ if (process.env.NODE_ENV !== 'production') {
     }));
 }
 
-const tail = new Tail(LATEST_LOGS_PATH)
+const tail = new Tail(LATEST_LOGS_PATH, {
+    fsWatchOptions: {
+        interval: 1000
+    }
+})
 
 tail.on("line", (data) => {
     console.info(data)

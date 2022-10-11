@@ -1,8 +1,11 @@
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import React, { useEffect, useState } from 'react'
-import { forceStopServer, getServerRunning, startServer } from '../../services/Server'
+import { forceStopServer, startServer } from '../../services/ServerService'
 import styles from './PowerButtonGroup.module.css'
+import SocketService from '../../services/SocketService'
+
+const socketService = SocketService()
 
 const PowerButtonGroup = () => {
 
@@ -10,8 +13,8 @@ const PowerButtonGroup = () => {
 
     useEffect(() => {
         const interval = setInterval(async () => {
-            const response = await getServerRunning()
-            setIsServerRunning(response.data.isServerRunning)
+            const isServerRunning = socketService.getMinecraftServerStatus().isServerRunning
+            setIsServerRunning(isServerRunning)
         }, 1000);
 
         return () => clearInterval(interval)

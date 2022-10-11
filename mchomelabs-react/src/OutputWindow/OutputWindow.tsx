@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { TextField } from '@mui/material'
-import { command } from '../services/RCON';
+import { command } from '../services/RCONService'
 import styles from './OutputWindow.module.css'
-import React from 'react';
+import React from 'react'
 
 const OutputWindow = () => {
 

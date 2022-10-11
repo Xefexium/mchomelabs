@@ -5,29 +5,30 @@ import logger from './logger'
 import ServerStatus from './ServerStatus'
 import { exit } from 'process'
 import { JAR_FILE_NAME, SERVER_JAR_PATH } from './env'
+import SocketIOServer from './SocketIOServer'
 
 
-const MCServerManager = () => {
+const MCServerRoutes = () => {
     let serverProcess: child_process.ChildProcessWithoutNullStreams
+    let socketServer = SocketIOServer()
+
+    setInterval(() => {
+        isServerRunning()
+    }, 1000) 
 
     const isServerRunning = (): boolean => {
         const isRunning = !!serverProcess && serverProcess.kill(0)
         if (isRunning) {
-            logger.info(ServerStatus.RUNNING)
+            socketServer.emitMinecraftServerStatus({isServerRunning: isRunning, status: ServerStatus.RUNNING})
         }
         else {
-            logger.info(ServerStatus.NOT_RUNNING)
+            socketServer.emitMinecraftServerStatus({isServerRunning: isRunning, status: ServerStatus.NOT_RUNNING})
         }
-
         return isRunning
     }
 
     const getServerPID = (req: Request, res: Response) => {
         res.json({ pid: serverProcess.pid })
-    }
-
-    const getServerRunning = (req: Request, res: Response) => {
-        res.json({ isServerRunning: isServerRunning() })
     }
 
     const getSystemStats = (req: Request, res: Response) => {
@@ -69,18 +70,18 @@ const MCServerManager = () => {
         else {
             logger.info('Server running')
         }
-        res.json({ isServerRunning: isServerRunning(), pid: serverProcess.pid })
+        res.sendStatus(200)
     }
 
     const postForceStopServer = (req: Request, res: Response) => {
-        serverProcess?.kill()
+        serverProcess.kill()
         logger.info(`Force stopped server - PID ${serverProcess.pid}`)
         res.json('Force stopped server')
     }
 
     return {
-        isServerRunning, getServerPID, getServerRunning, getSystemStats, postStartServer, postForceStopServer
+        getServerPID, getSystemStats, postStartServer, postForceStopServer
     }
 }
 
-export default MCServerManager
+export default MCServerRoutes
