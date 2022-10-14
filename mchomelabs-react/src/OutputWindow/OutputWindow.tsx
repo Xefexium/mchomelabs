@@ -3,12 +3,25 @@ import { TextField } from '@mui/material'
 import { command } from '../services/RCONService'
 import styles from './OutputWindow.module.css'
 import React from 'react'
+import SocketService from '../services/SocketService'
+
+const socketService = SocketService()
 
 const OutputWindow = () => {
 
   const [inputText, setInputText] = useState('')
   const [outputs, setOutputs] = useState(Array<string>)
   const contentWindow = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const logs = socketService.getServerLog()
+      if (outputs[outputs.length - 1] !== logs && !!logs)
+        setOutputs([...outputs, logs])
+    })
+
+    return () => clearInterval(interval)
+  }, [outputs])
 
   useEffect(() => {
     scrollToBottom()
@@ -30,7 +43,7 @@ const OutputWindow = () => {
   }
 
   const ensureValueHasLinebreak = (value: string) => {
-    return value.endsWith('\n') ? value : value + '\n'
+    return value?.endsWith('\n') ? value : value + '\n'
   }
 
   return (

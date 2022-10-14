@@ -10,7 +10,7 @@ import SocketIOServer from './SocketIOServer'
 
 const MCServerRoutes = () => {
     let serverProcess: child_process.ChildProcessWithoutNullStreams
-    let socketServer = SocketIOServer()
+    let socketIOServer = SocketIOServer()
 
     setInterval(() => {
         isServerRunning()
@@ -19,10 +19,10 @@ const MCServerRoutes = () => {
     const isServerRunning = (): boolean => {
         const isRunning = !!serverProcess && serverProcess.kill(0)
         if (isRunning) {
-            socketServer.emitMinecraftServerStatus({isServerRunning: isRunning, status: ServerStatus.RUNNING})
+            socketIOServer.emitServerStatus({isServerRunning: isRunning, status: ServerStatus.RUNNING})
         }
         else {
-            socketServer.emitMinecraftServerStatus({isServerRunning: isRunning, status: ServerStatus.NOT_RUNNING})
+            socketIOServer.emitServerStatus({isServerRunning: isRunning, status: ServerStatus.NOT_RUNNING})
         }
         return isRunning
     }

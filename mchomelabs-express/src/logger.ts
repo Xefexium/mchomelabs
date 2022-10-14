@@ -1,6 +1,7 @@
 import { Tail } from 'tail';
 import winston from 'winston'
 import { LATEST_LOGS_PATH } from './env';
+import SocketIOServer from './SocketIOServer';
 
 const logger = winston.createLogger({
     level: 'info',
@@ -22,14 +23,13 @@ if (process.env.NODE_ENV !== 'production') {
     }));
 }
 
-const tail = new Tail(LATEST_LOGS_PATH, {
-    fsWatchOptions: {
-        interval: 1000
-    }
-})
+const socketIOServer = SocketIOServer()
+
+const tail = new Tail(LATEST_LOGS_PATH)
 
 tail.on("line", (data) => {
     console.info(data)
+    socketIOServer.emitServerLog(data)
 })
 
 export default logger

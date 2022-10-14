@@ -16,13 +16,17 @@ const SocketIOServer = () => {
             })
     }
 
-    const emitMinecraftServerStatus = (serverStatus: ServerStatus) => {
-        socketServer.emit('minecraftServerStatus', serverStatus)
+    const emitServerStatus = (serverStatus: ServerStatus) => {
+        socketServer.emit('serverStatus', serverStatus)
+    }
+
+    const emitServerLog = (log: string) => {
+        socketServer.emit('serverLog', log)
     }
 
 
 
-    return { setupSocketServer, emitMinecraftServerStatus }
+    return { setupSocketServer, emitServerStatus, emitServerLog }
 }
 
 

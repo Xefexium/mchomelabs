@@ -13,7 +13,7 @@ const PowerButtonGroup = () => {
 
     useEffect(() => {
         const interval = setInterval(async () => {
-            const isServerRunning = socketService.getMinecraftServerStatus().isServerRunning
+            const isServerRunning = socketService.getServerStatus().isServerRunning
             setIsServerRunning(isServerRunning)
         }, 1000);
 

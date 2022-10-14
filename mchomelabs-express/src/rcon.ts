@@ -4,10 +4,6 @@ import logger from './logger';
 
 const client = new RCON()
 
-client.on('message', async (data) => {
-    logger.info('Command output returned: ', data);
-});
-
 const rconCommand = async (command: any) => {
     logger.info(`Command Issued: ${command}`)
     let output

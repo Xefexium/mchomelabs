@@ -6,18 +6,20 @@ interface ServerResponse {
 }
 
 let socketClient: Socket
+let log: string
 
 const SocketService = () => {
 
     if (!socketClient) {
         socketClient = io('http://localhost:3001')
         socketClient.connect()
-        socketClient.on('minecraftServerStatus', (response: ServerResponse) => minecraftServerStatus = response)
+        socketClient.on('serverLog', (response: string) => log = response)
+        socketClient.on('serverStatus', (response: ServerResponse) => minecraftServerStatus = response)
     }
 
     let minecraftServerStatus: ServerResponse
 
-    const getMinecraftServerStatus = () => {
+    const getServerStatus = () => {
         if (!minecraftServerStatus) {
             minecraftServerStatus = {
                 isServerRunning: false,
@@ -28,7 +30,13 @@ const SocketService = () => {
         return minecraftServerStatus
     }
 
-    return { getMinecraftServerStatus }
+    const getServerLog = () => {
+        return log
+    }
+
+
+
+    return { getServerStatus, getServerLog }
 }
 
 export default SocketService
